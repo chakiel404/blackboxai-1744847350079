@@ -1,0 +1,76 @@
+# Enable rewrite engine
+RewriteEngine On
+RewriteBase /api/
+
+# Handle CORS for all requests
+<IfModule mod_headers.c>
+    # Allow from any origin
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-HTTP-Method-Override"
+    Header always set Access-Control-Allow-Credentials "true"
+    Header always set Access-Control-Max-Age "3600"
+    
+    # Force content type for JSON responses
+    Header always set Content-Type "application/json; charset=UTF-8" env=JSON_RESPONSE
+</IfModule>
+
+# Handle OPTIONS method specially - respond with 200 OK immediately
+# This needs to be before any other rules
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L,E=JSON_RESPONSE:1]
+
+# Make sure mod_rewrite is enabled and working
+<IfModule mod_rewrite.c>
+    # Generic rule to handle URLs without .php extension
+    # This needs to be before other specific rules
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^/]+)$ $1.php [L]
+    
+    # Special case for profil -> profile.php
+    RewriteRule ^profil$ profile.php [L]
+    
+    # Handle login and authentication
+    RewriteRule ^login$ auth.php [QSA,L]
+    RewriteRule ^auth$ auth.php [QSA,L]
+    RewriteRule ^logout$ logout.php [QSA,L]
+    
+    # Rewrite URLs with IDs
+    RewriteRule ^guru/([0-9]+)$ guru.php?id=$1 [QSA,L]
+    RewriteRule ^siswa/([0-9]+)$ siswa.php?id=$1 [QSA,L]
+    RewriteRule ^kelas/([0-9]+)$ kelas.php?id=$1 [QSA,L]
+    RewriteRule ^mata-pelajaran/([0-9]+)$ mata_pelajaran.php?id=$1 [QSA,L]
+    RewriteRule ^jadwal/([0-9]+)$ jadwal.php?id=$1 [QSA,L]
+    RewriteRule ^materi/([0-9]+)$ materi.php?id=$1 [QSA,L]
+    RewriteRule ^tugas/([0-9]+)$ tugas.php?id=$1 [QSA,L]
+    RewriteRule ^pengumpulan-tugas/([0-9]+)$ pengumpulan_tugas.php?id=$1 [QSA,L]
+    RewriteRule ^nilai/([0-9]+)$ nilai.php?id=$1 [QSA,L]
+    RewriteRule ^jenis-penilaian/([0-9]+)$ jenis_penilaian.php?id=$1 [QSA,L]
+    RewriteRule ^rekap-nilai/([0-9]+)$ rekap_nilai.php?id=$1 [QSA,L]
+    
+    # Rewrite URLs without IDs
+    RewriteRule ^guru$ guru.php [QSA,L]
+    RewriteRule ^siswa$ siswa.php [QSA,L]
+    RewriteRule ^kelas$ kelas.php [QSA,L]
+    RewriteRule ^mata-pelajaran$ mata_pelajaran.php [QSA,L]
+    RewriteRule ^jadwal$ jadwal.php [QSA,L]
+    RewriteRule ^materi$ materi.php [QSA,L]
+    RewriteRule ^tugas$ tugas.php [QSA,L]
+    RewriteRule ^pengumpulan-tugas$ pengumpulan_tugas.php [QSA,L]
+    RewriteRule ^nilai$ nilai.php [QSA,L]
+    RewriteRule ^jenis-penilaian$ jenis_penilaian.php [QSA,L]
+    RewriteRule ^rekap-nilai$ rekap_nilai.php [QSA,L]
+    
+    # Debug test file for troubleshooting
+    RewriteRule ^test$ test.php [L]
+</IfModule>
+
+# For mod_rewrite troubleshooting
+# Add these and check server logs
+# RewriteLog "/var/log/apache2/rewrite.log"
+# RewriteLogLevel 3
+
+# Handle 404 errors
+ErrorDocument 404 /api/404.php 
