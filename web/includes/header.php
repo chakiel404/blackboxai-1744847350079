@@ -113,13 +113,37 @@ if (!isset($page_title)) {
                                 <i class="fas fa-tasks me-1"></i>Tugas
                             </a>
                         </li>
-                        <?php if (has_role(['guru', 'siswa'])): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/web/modules/nilai/index.php">
-                                    <i class="fas fa-star me-1"></i>Nilai
-                                </a>
-                            </li>
-                        <?php endif; ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="nilaiDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-star me-1"></i>Nilai
+                            </a>
+                            <ul class="dropdown-menu">
+                                <?php if (has_role(['admin'])): ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/web/modules/nilai/jenis_penilaian.php">
+                                            <i class="fas fa-list-alt me-2"></i>Jenis Penilaian
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                <?php endif; ?>
+                                
+                                <?php if (has_role(['guru'])): ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/web/modules/nilai/index.php">
+                                            <i class="fas fa-tasks me-2"></i>Penilaian Tugas
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                                
+                                <?php if (has_role(['guru', 'siswa'])): ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/web/modules/nilai/report.php">
+                                            <i class="fas fa-file-alt me-2"></i>Laporan Nilai
+                                        </a>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+                        </li>
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item dropdown">
