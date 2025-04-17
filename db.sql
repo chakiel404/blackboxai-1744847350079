@@ -65,7 +65,6 @@ CREATE TABLE `jadwal` (
   `hari` varchar(10) NOT NULL,
   `waktu_mulai` time NOT NULL,
   `waktu_selesai` time NOT NULL,
-  `semester` varchar(10) NOT NULL,
   `dibuat_pada` timestamp NULL DEFAULT NULL,
   `diperbarui_pada` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -90,7 +89,6 @@ CREATE TABLE `tugas` (
   `jalur_file` varchar(255) DEFAULT NULL,
   `tanggal_jatuh_tempo` datetime NOT NULL,
   `bobot_nilai` decimal(5,2) DEFAULT 100.00,
-  `semester` varchar(10) NOT NULL,
   `dibuat_pada` timestamp NULL DEFAULT NULL,
   `diperbarui_pada` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -102,7 +100,7 @@ CREATE TABLE `pengumpulan_tugas` (
   `siswa_id` int(11) NOT NULL,
   `jalur_file` varchar(255) DEFAULT NULL,
   `komentar_siswa` text DEFAULT NULL,
-  `status` enum('belum_dinilai','sudah_dinilai') DEFAULT 'belum_dinilai',
+  `status` enum('belum_dinilai','sudah_dinilai','revisi') DEFAULT 'belum_dinilai',
   `dikumpulkan_pada` timestamp NULL DEFAULT NULL,
   `dibuat_pada` timestamp NULL DEFAULT NULL,
   `diperbarui_pada` timestamp NULL DEFAULT NULL
@@ -116,19 +114,8 @@ CREATE TABLE `nilai` (
   `mata_pelajaran_id` int(11) NOT NULL,
   `skor` decimal(5,2) NOT NULL,
   `komentar_guru` text DEFAULT NULL,
-  `semester` varchar(10) NOT NULL,
   `dinilai_oleh` int(11) NOT NULL,
   `dinilai_pada` timestamp NULL DEFAULT NULL,
-  `dibuat_pada` timestamp NULL DEFAULT NULL,
-  `diperbarui_pada` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Table structure for table `jenis_penilaian`
-CREATE TABLE `jenis_penilaian` (
-  `id` int(11) NOT NULL,
-  `nama` varchar(50) NOT NULL,
-  `bobot` decimal(5,2) NOT NULL,
-  `deskripsi` text DEFAULT NULL,
   `dibuat_pada` timestamp NULL DEFAULT NULL,
   `diperbarui_pada` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -138,7 +125,6 @@ CREATE TABLE `rekap_nilai` (
   `id` int(11) NOT NULL,
   `siswa_id` int(11) NOT NULL,
   `mata_pelajaran_id` int(11) NOT NULL,
-  `semester` varchar(10) NOT NULL,
   `nilai_akhir` decimal(5,2) NOT NULL,
   `dibuat_pada` timestamp NULL DEFAULT NULL,
   `diperbarui_pada` timestamp NULL DEFAULT NULL
@@ -202,10 +188,6 @@ ALTER TABLE `nilai`
   ADD KEY `pengumpulan_tugas_id` (`pengumpulan_tugas_id`),
   ADD KEY `dinilai_oleh` (`dinilai_oleh`);
 
--- Indexes for table `jenis_penilaian`
-ALTER TABLE `jenis_penilaian`
-  ADD PRIMARY KEY (`id`);
-
 -- Indexes for table `rekap_nilai`
 ALTER TABLE `rekap_nilai`
   ADD PRIMARY KEY (`id`),
@@ -252,10 +234,6 @@ ALTER TABLE `pengumpulan_tugas`
 ALTER TABLE `nilai`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
--- AUTO_INCREMENT for table `jenis_penilaian`
-ALTER TABLE `jenis_penilaian`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 -- AUTO_INCREMENT for table `rekap_nilai`
 ALTER TABLE `rekap_nilai`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -298,4 +276,4 @@ ALTER TABLE `nilai`
 -- Constraints for table `rekap_nilai`
 ALTER TABLE `rekap_nilai`
   ADD CONSTRAINT `rekap_nilai_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `rekap_nilai_ibfk_2` FOREIGN KEY (`mata_pelajaran_id`) REFERENCES `mata_pelajaran` (`id`) ON DELETE CASCADE; 
+  ADD CONSTRAINT `rekap_nilai_ibfk_2` FOREIGN KEY (`mata_pelajaran_id`) REFERENCES `mata_pelajaran` (`id`) ON DELETE CASCADE;
